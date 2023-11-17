@@ -25,6 +25,10 @@ Have a member of the webring add you as a peer for your list to sync with other 
 
 `addsite` - Create an entry in the sites list for a website that is not configured as a WebLink node
 
+## Webring HTML Page
+
+The `webring.html` file will load content from the `webring.json` file. The banner image size is currently set to 240x60. CSS is inline and easily customizable. The javascript code in this file can be used to create custom pages. 
+
 ## Example JSON Data
 
 ```json
@@ -36,14 +40,21 @@ Have a member of the webring add you as a peer for your list to sync with other 
         "ring_url": "example.com",
         "avatarb64": "garble==",
         "gpg": "public_key",
-        "master_node_url": "",
+        "master_node_url": "peer.example.com/webring",
         "blacklist": []
       },
     "sites": [
       {
-        "title": "example",
-        "url": "example.com",
-        "ring_url": "example.com",
+        "title": "peer",
+        "url": "peer.example.com",
+        "ring_url": "peer.example.com/webring",
+        "avatarb64": "garble==",
+        "gpg": "public_key"
+      },
+      {
+        "title": "external site",
+        "url": "ext.example.com",
+        "ring_url": "None",
         "avatarb64": "garble==",
         "gpg": "public_key"
       }
@@ -55,7 +66,7 @@ Have a member of the webring add you as a peer for your list to sync with other 
 - Implement site blacklsting
 - PGP/GPG integrity checking
 - Implement site banners/avatars
-- Webring page generation
+- ~~Webring page generation~~
 - Peer and site removal
 - Administrative web interface
 - Support for different languages to make it easier to update data directly from webserver

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webring</title>
+    <style>
+        .site-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .site-card {
+            font-family: monospace;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .site-banner {
+            width: 240px;
+            height: 60px;
+            margin: auto;
+            margin-bottom: 10px;
+            background-color: #f0f0f0;
+            background-position: center;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+    <div id="sitesContainer" class="site-grid">
+        <!-- Sites Content -->
+    </div>
+
+    <script>
+        fetch('webring.json')
+            .then(response => response.json())
+            .then(data => {
+                const sitesContainer = document.getElementById('sitesContainer');
+                data.sites.forEach(site => {
+                    const siteElement = document.createElement('div');
+                    siteElement.className = 'site-card';
+                    let bannerImage = site.avatarb64 
+                                      ? `url(data:image/gif;base64,${site.avatarb64})` 
+                                      : 'url(placeholder.png)';
+                    siteElement.innerHTML = `
+                        <div class="site-banner" style="background-image: ${bannerImage};"></div>
+                        <h3>${site.title}</h3>
+                        <p><a href="${site.url}">${site.url}</a></p>
+                    `;
+                    sitesContainer.appendChild(siteElement);
+                });
+            })
+            .catch(error => console.error('Error loading webring data:', error));
+    </script>
+</body>
+</html>
