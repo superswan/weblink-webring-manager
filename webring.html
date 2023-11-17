@@ -37,6 +37,19 @@
             font-size: 20px;
             color: #999;
         }
+
+        /* Responsive columns for smaller screens */
+        @media screen and (max-width: 768px) {
+            .site-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .site-grid {
+                grid-template-columns: 1fr; /* 1 column for mobile phones */
+            }
+        }
     </style>
 </head>
 <body>
