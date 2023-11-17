@@ -1,8 +1,8 @@
 import argparse
-import requests
-import json
-import os
 import base64
+import os
+import json
+import requests
 
 def load_or_initialize_webring():
     file_path = 'webring.json'
@@ -10,7 +10,6 @@ def load_or_initialize_webring():
     if os.path.exists(file_path):
         with open(file_path, 'r') as file:
             return json.load(file)
-    
     return initialize_webring()
 
 # Manually add a site entry
@@ -25,7 +24,7 @@ def create_site_entry(is_node):
     if not ring_url:
         ring_url = url
 
-    image_path = input("Enter the local path to your banner image (leave blank if none): ")
+    image_path = input("Enter the local path for the banner image (leave blank if none): ")
     avatarb64 = ""
     if image_path:
         with open(image_path, "rb") as image_file:
@@ -78,7 +77,7 @@ def fetch_webring_data(url):
         url = 'http://' + url
     url = url + '/webring.json'
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
         response.raise_for_status()
         return response.json()
     except requests.RequestException as e:
@@ -106,7 +105,7 @@ def add_peer(webring_url):
         local_data = json.load(file)
 
     local_node_url = local_data['node']['url']
-    if remote_node_data['url'] is not local_node_url:
+    if remote_node_data['url'] != local_node_url:
         local_data["sites"].append(remote_node_site_data)
 
     with open('webring.json', 'w') as file:
@@ -181,7 +180,7 @@ def main():
         local_sites_urls = {site['url'] for site in local_data['sites']}
         if site['url'] not in local_sites_urls and site['url'] != local_node_url:
             local_data['sites'].append(site)
-        
+       
         with open('webring.json', 'w') as file:
             json.dump(local_data, file, indent=4)
     else:
