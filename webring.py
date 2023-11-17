@@ -63,7 +63,6 @@ def initialize_webring():
     if master_node_url:
         print(f"Adding master node: {master_node_url}")
         add_peer(master_node_url)
-        sync_peer_data(master_node_url)
 
     return webring_data
     
