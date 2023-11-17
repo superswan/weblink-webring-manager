@@ -24,6 +24,7 @@ Have a member of the webring add you as a peer for your list to sync with other 
 `syncpeer [url (optional)]` - Syncs data with all nodes in the sites list. Specifying the url path of a node where `webring.json` is located will sync site data for that specific node.
 
 `addsite` - Create an entry in the sites list for a website that is not configured as a WebLink node
+> Banner images for external sites require that you download the banner in a location that the script can access. The image file will be encoded as base64 in the `sites` array so the image files can be removed once they've been added. 
 
 ## Webring HTML Page
 
@@ -65,7 +66,7 @@ The `webring.html` file will load content from the `webring.json` file. The bann
 ## To Do
 - Implement site blacklsting
 - PGP/GPG integrity checking
-- Implement site banners/avatars
+- ~~Implement site banners/avatars~~
 - ~~Webring page generation~~
 - Peer and site removal
 - Administrative web interface

@@ -73,7 +73,7 @@ def get_master_node_url(data):
     return None
 
 def fetch_webring_data(url):
-    if 'http://' not in url or 'https://' not in url:
+    if not (url.startswith('http://') or url.startswith('https://')):
         url = 'http://' + url
     url = url + '/webring.json'
     try:
@@ -111,8 +111,12 @@ def add_peer(webring_url):
     with open('webring.json', 'w') as file:
         json.dump(local_data, file, indent=4)
 
-    print(f"Successfully added peer {remote_node_data['title']}({remote_node_data['ring_url']})")
-    return local_data["sites"]
+    print(f"Successfully added peer {remote_node_data['title']} ({remote_node_data['ring_url']})")
+    do_sync = input("Would you like to sync with this peer now? [y/N]")
+    if do_sync.lower() == 'y':
+        sync_peer_data(webring_url)
+    else:
+        return local_data["sites"]
 
 # Add missing sites from peer sites array to the local sites array
 def sync_peer_data(webring_url):
