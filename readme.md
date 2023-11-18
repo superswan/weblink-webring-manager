@@ -3,6 +3,8 @@ A simple script for managing a web ring in a peer-to-peer fashion.
 
 This is a very early version of the script and lots of work still needs to be done.
 
+[Demo (YouTube)](https://www.youtube.com/watch?v=prXKrLyCL08)
+
 ## Setup
 Clone the repository and run the script to configure a node
 
