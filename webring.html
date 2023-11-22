@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webring</title>
     <style>
+        .header {
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin: auto;
+            margin-bottom: 10px;
+            max-width: 640px;
+            text-align: center;
+        }
+
+        #node-title {
+            font-family: monospace;
+            font-weight: 600;
+        }
         .site-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -17,6 +30,10 @@
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
+        }
+        .site-card a {
+            color: grey;
+            text-decoration: none;
         }
         .site-banner {
             width: 240px;
@@ -47,6 +64,19 @@
             font-size: 20px;
             color: #999;
         }
+        .footer {
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            color: grey;
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        .footer a {
+            color: grey;
+                text-decoration: none;
+        }
 
         /* Responsive columns for smaller screens */
         @media screen and (max-width: 768px) {
@@ -64,13 +94,24 @@
 </head>
 <body>
     <div id="loadingMessage" class="loading-msg">Loading...</div>
+    <div id="header" class="header">
+       <img src="" id="node-banner" />
+       <p id="node-title"></p> 
+    </div>
     <div id="sitesContainer" class="site-grid">
         <!-- Sites Content -->
     </div>
+    <div class="footer"><a href="https://github.com/superswan/weblink-webring-manager" target="_blank">WebLink</a></div>
 
     <script>
-        const sitesContainer = document.getElementById('sitesContainer');
+ 	    const sitesContainer = document.getElementById('sitesContainer');
         const loadingMessage = document.getElementById('loadingMessage');
+        const header = document.getElementById('header');
+        const footer = document.querySelector('.footer');
+
+        // Hide header and footer during loading
+        header.style.display = 'none';
+        footer.style.display = 'none';
 
         function formatUrl(url) {
         if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -83,6 +124,15 @@
             .then(response => response.json())
             .then(data => {
                 loadingMessage.style.display = 'none';
+                header.style.display = '';
+                footer.style.display = '';
+
+                const nodeBanner = document.getElementById('node-banner');
+                const nodeTitle = document.getElementById('node-title');
+                const nodeData = data.node;
+
+                nodeBanner.src = nodeData.avatarb64 ? `data:image/gif;base64,${nodeData.avatarb64}` : 'placeholder.png';
+                nodeTitle.textContent = nodeData.title;
 
                 if (data.sites.length === 0) {
                     const noSitesMsg = document.createElement('div');
@@ -106,7 +156,7 @@
                     });
                 }
             })
-            .catch(error => console.error('Error loading webring data:', error));
-    </script>
+            .catch(error => console.error('Error loading webring data:', error));    
+	</script>
 </body>
 </html>
