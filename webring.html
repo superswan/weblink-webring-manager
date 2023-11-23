@@ -156,7 +156,14 @@
                     });
                 }
             })
-            .catch(error => console.error('Error loading webring data:', error));    
+            .catch(error => { 
+                console.error('Error loading webring data:', error);
+                loadingMessage.style.display = 'none';
+                const noSitesMsg = document.createElement('div');
+                noSitesMsg.className = 'no-sites-msg';
+                noSitesMsg.textContent = 'No sites available';
+                sitesContainer.appendChild(noSitesMsg);
+            });    
 	</script>
 </body>
 </html>
