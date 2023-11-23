@@ -1,10 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webring</title>
     <style>
+        body {
+            padding-top: 30px;
+        }
+
+        .navbar {
+            overflow: hidden;
+            background-color: #141414;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 20px;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            font-family: monospace;
+            float: left;
+            display: block;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 5px 8px;
+            text-decoration: none;
+            font-size: 10px;
+        }
+
+        .navbar a:hover {
+            background-color: orange;
+            color: black;
+        }
+
+        /* Add a color to the active/current link */
+        .navbar a.active {
+            background-color: #04AA6D;
+            color: white;
+        }
+
         .header {
             border: 1px solid #ddd;
             padding: 8px;
@@ -18,6 +55,7 @@
             font-family: monospace;
             font-weight: 600;
         }
+
         .site-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -25,16 +63,19 @@
             max-width: 1200px;
             margin: auto;
         }
+
         .site-card {
             font-family: monospace;
             border: 1px solid #ddd;
             padding: 10px;
             text-align: center;
         }
+
         .site-card a {
             color: grey;
             text-decoration: none;
         }
+
         .site-banner {
             width: 240px;
             height: 60px;
@@ -44,6 +85,7 @@
             background-position: center;
             background-size: cover;
         }
+
         .no-sites-msg {
             font-family: monospace;
             text-align: center;
@@ -54,6 +96,7 @@
             font-size: 20px;
             color: #999;
         }
+
         .loading-msg {
             font-family: monospace;
             text-align: center;
@@ -64,6 +107,7 @@
             font-size: 20px;
             color: #999;
         }
+
         .footer {
             text-align: center;
             margin-top: 10px;
@@ -75,54 +119,74 @@
 
         .footer a {
             color: grey;
-                text-decoration: none;
+            text-decoration: none;
         }
 
         /* Responsive columns for smaller screens */
         @media screen and (max-width: 768px) {
             .site-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for tablets */
+                grid-template-columns: repeat(2, 1fr);
+                /* 2 columns for tablets */
             }
         }
 
         @media screen and (max-width: 480px) {
             .site-grid {
-                grid-template-columns: 1fr; /* 1 column for mobile phones */
+                grid-template-columns: 1fr;
+                /* 1 column for mobile phones */
             }
         }
     </style>
 </head>
+
 <body>
+    <div id="navbar" class="navbar">
+        <a href="javascript:void(0);" id="viewRandom">Random</a>
+        <a href="#banner" id="toggleBanner">Show Banner</a>
+        <a href="#title" id="toggleTitle">Show Title</a>
+        <a href="#links" id="toggleUrl">Show URL</a>
+    </div>
     <div id="loadingMessage" class="loading-msg">Loading...</div>
     <div id="header" class="header">
-       <img src="" id="node-banner" />
-       <p id="node-title"></p> 
+        <img src="" id="node-banner" />
+        <p id="node-title"></p>
     </div>
     <div id="sitesContainer" class="site-grid">
         <!-- Sites Content -->
     </div>
     <div class="footer"><a href="https://github.com/superswan/weblink-webring-manager" target="_blank">WebLink</a></div>
-
+    <!-- sitesContainer generation from webring.json -->
     <script>
- 	    const sitesContainer = document.getElementById('sitesContainer');
+        const sitesContainer = document.getElementById('sitesContainer');
         const loadingMessage = document.getElementById('loadingMessage');
         const header = document.getElementById('header');
         const footer = document.querySelector('.footer');
 
-        // Hide header and footer during loading
+        // Hide header and footer while loading
         header.style.display = 'none';
         footer.style.display = 'none';
 
+        // store urls in array for random selection later
+        let siteLinks = [];
+
         function formatUrl(url) {
-        if (url.startsWith('http://') || url.startsWith('https://')) {
-            return url;
-        }
+            if (url.startsWith('http://') || url.startsWith('https://')) {
+                return url;
+            }
             return '//' + url;
+        }
+
+        function visitRandomSite() {
+            if (siteLinks.length > 0) {
+                const randomIndex = Math.floor(Math.random() * siteLinks.length);
+                window.open(siteLinks[randomIndex], '_blank');
+            }
         }
 
         fetch(`webring.json?_=${new Date().getTime()}`)
             .then(response => response.json())
             .then(data => {
+                
                 loadingMessage.style.display = 'none';
                 header.style.display = '';
                 footer.style.display = '';
@@ -143,9 +207,9 @@
                     data.sites.forEach(site => {
                         const siteElement = document.createElement('div');
                         siteElement.className = 'site-card';
-                        let bannerImage = site.avatarb64 
-                                        ? `url(data:image/gif;base64,${site.avatarb64})` 
-                                        : 'url(placeholder.png)';
+                        let bannerImage = site.avatarb64
+                            ? `url(data:image/gif;base64,${site.avatarb64})`
+                            : 'url(placeholder.png)';
                         const formattedUrl = formatUrl(site.url);
                         siteElement.innerHTML = `
                             <div class="site-banner" style="background-image: ${bannerImage};"></div>
@@ -154,16 +218,49 @@
                         `;
                         sitesContainer.appendChild(siteElement);
                     });
+
+                    siteLinks = data.sites.map(site => formatUrl(site.url));
                 }
             })
-            .catch(error => { 
+            .catch(error => {
                 console.error('Error loading webring data:', error);
                 loadingMessage.style.display = 'none';
                 const noSitesMsg = document.createElement('div');
                 noSitesMsg.className = 'no-sites-msg';
                 noSitesMsg.textContent = 'No sites available';
                 sitesContainer.appendChild(noSitesMsg);
-            });    
-	</script>
+            });
+
+        document.getElementById('viewRandom').addEventListener('click', visitRandomSite);
+    </script>
+    <!-- navbar options -->
+    <script>
+        // toggle the display of page elements
+        function toggleBanner() {
+            let banners = document.querySelectorAll('.site-banner');
+            banners.forEach(banner => {
+                banner.style.display = banner.style.display === 'none' ? '' : 'none';
+            });
+        }
+
+        function toggleTitle() {
+            let titles = document.querySelectorAll('.site-card h3');
+            titles.forEach(title => {
+                title.style.display = title.style.display === 'none' ? '' : 'none';
+            });
+        }
+
+        function toggleUrl() {
+            let urls = document.querySelectorAll('.site-card p');
+            urls.forEach(url => {
+                url.style.display = url.style.display === 'none' ? '' : 'none';
+            });
+        }
+
+        document.getElementById('toggleBanner').addEventListener('click', toggleBanner);
+        document.getElementById('toggleTitle').addEventListener('click', toggleTitle);
+        document.getElementById('toggleUrl').addEventListener('click', toggleUrl);
+    </script>
 </body>
+
 </html>
