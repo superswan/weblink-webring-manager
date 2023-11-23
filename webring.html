@@ -186,7 +186,7 @@
         fetch(`webring.json?_=${new Date().getTime()}`)
             .then(response => response.json())
             .then(data => {
-                
+
                 loadingMessage.style.display = 'none';
                 header.style.display = '';
                 footer.style.display = '';
@@ -205,17 +205,21 @@
                     sitesContainer.appendChild(noSitesMsg);
                 } else {
                     data.sites.forEach(site => {
+                        // create Site card
                         const siteElement = document.createElement('div');
                         siteElement.className = 'site-card';
-                        let bannerImage = site.avatarb64
-                            ? `url(data:image/gif;base64,${site.avatarb64})`
-                            : 'url(placeholder.png)';
+                        // create <img> element for banner
+                        const bannerImg = document.createElement('img');
+                        bannerImg.className = 'site-banner';
+                        bannerImg.src = site.avatarb64 ? `data:image/gif;base64,${site.avatarb64}` : 'placeholder.png';
+                        
                         const formattedUrl = formatUrl(site.url);
+
                         siteElement.innerHTML = `
-                            <div class="site-banner" style="background-image: ${bannerImage};"></div>
                             <h3>${site.title}</h3>
                             <p><a href="${formattedUrl}">${site.url}</a></p>
                         `;
+                        siteElement.prepend(bannerImg);
                         sitesContainer.appendChild(siteElement);
                     });
 
